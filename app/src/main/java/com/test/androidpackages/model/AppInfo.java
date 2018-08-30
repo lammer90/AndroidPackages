@@ -1,4 +1,4 @@
-package com.test.androidpackages;
+package com.test.androidpackages.model;
 
 import android.graphics.drawable.Drawable;
 
