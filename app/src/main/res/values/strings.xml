@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Apps</string>
     <string name="search">Поиск</string>
+    <string name="setup">Установить</string>
 </resources>

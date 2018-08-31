@@ -20,7 +20,8 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ElementViewHol
     @NonNull
     @Override
     public ElementViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.view_item_app, viewGroup, false);
+        LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
+        View view = layoutInflater.inflate(R.layout.view_item_app, viewGroup, false);
         return new ElementViewHolder(view);
     }
 

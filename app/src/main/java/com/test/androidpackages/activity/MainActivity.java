@@ -1,5 +1,6 @@
 package com.test.androidpackages.activity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -70,8 +71,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.menu: {
-                show("Hellow");
+            case R.id.setup: {
+                Intent intent = new Intent(this, FilePickerActivity.class);
+                startActivity(intent);
                 return true;
             }
             default: return false;
