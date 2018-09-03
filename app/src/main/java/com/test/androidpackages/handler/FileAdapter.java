@@ -1,9 +1,7 @@
 package com.test.androidpackages.handler;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,38 +11,60 @@ import android.widget.TextView;
 
 import com.test.androidpackages.R;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.util.List;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder> {
-    private List<Path> files;
+    private List<File> files;
     private Context context;
+    private FileClickListener fileClickListener;
+
+    private final int DIRECTORY_TYPE = 0;
+    private final int FILE_TYPE = 1;
 
     public FileAdapter(Context context) {
         this.context = context;
     }
 
-    public void setFiles(List<Path> files) {
+    public void setFiles(List<File> files) {
         this.files = files;
+    }
+
+    public void setFileClickListener(FileClickListener fileClickListener) {
+        this.fileClickListener = fileClickListener;
     }
 
     @NonNull
     @Override
     public FileViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        //i - DIRECTORY_TYPE or FILE_TYPE
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.view_item_file, viewGroup, false);
+        view.setOnClickListener(s -> fileClickListener.onFileClick((File)s.getTag()));
         return new FileViewHolder(view);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull FileViewHolder fileViewHolder, int i) {
-        fileViewHolder.textView.setText(files.get(i).getFileName().toString());
+        if (files.get(i).isDirectory()){
+            fileViewHolder.imageView.setImageResource(R.drawable.ic_directory_92dp);
+        }
+        else {
+            fileViewHolder.imageView.setImageResource(R.drawable.ic_file_92dp);
+        }
+
+        fileViewHolder.textView.setText(files.get(i).getName());
+        fileViewHolder.itemView.setTag(files.get(i));
     }
 
     @Override
     public int getItemCount() {
         return files.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (files.get(position).isDirectory()) ? DIRECTORY_TYPE : FILE_TYPE;
     }
 
     public class FileViewHolder extends RecyclerView.ViewHolder{
@@ -56,5 +76,9 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
             imageView = itemView.findViewById(R.id.im_fl);
             textView = itemView.findViewById(R.id.name_fl);
         }
+    }
+
+    public interface FileClickListener{
+        void onFileClick(File file);
     }
 }

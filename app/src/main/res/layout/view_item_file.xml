@@ -12,6 +12,7 @@
 
     <TextView
         android:id="@+id/name_fl"
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginStart="3dp">
