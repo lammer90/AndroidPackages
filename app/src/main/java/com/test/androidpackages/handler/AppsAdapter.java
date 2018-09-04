@@ -31,6 +31,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ElementViewHol
         viewHolder.iconView.setImageDrawable(info.getIcon());
         viewHolder.name.setText(info.getName());
         viewHolder.version.setText(info.getVersionName());
+        viewHolder.itemView.setTag(info);
     }
 
     @Override

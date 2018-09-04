@@ -3,6 +3,7 @@ package com.test.androidpackages.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.FileProvider;
@@ -12,7 +13,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,6 +34,24 @@ public class MainActivity extends AppCompatActivity {
     private AppsAdapter appsAdapter = new AppsAdapter();
     private final int REQUEST_FILE = 1;
     private final String FILE_NAME = "file_name";
+    private ItemTouchHelper.Callback callback = new ItemTouchHelper.Callback() {
+        @Override
+        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            return makeMovementFlags(ItemTouchHelper.ACTION_STATE_IDLE, ItemTouchHelper.END);
+        }
+
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+            //new AsyncTascUninstall().execute(((AppInfo)viewHolder.itemView.getTag()).getPackageName());
+            // OR
+            uninstallPackage(((AppInfo)viewHolder.itemView.getTag()).getPackageName());
+        }
+    };
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -70,9 +89,12 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.sw_la);
 
         swipeRefreshLayout.setOnRefreshListener(() -> updateApps(""));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(dividerItemDecoration);
+        recyclerView.addItemDecoration(itemTouchHelper);
         recyclerView.setAdapter(appsAdapter);
 
         updateApps("");
@@ -117,6 +139,12 @@ public class MainActivity extends AppCompatActivity {
         installIntent.setDataAndType(uri, "application/vnd.android.package-archive");
         //installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(installIntent);
+    }
+
+    private void uninstallPackage(String packageName) {
+        Intent unInstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+        unInstallIntent.setData(Uri.parse("package:" + packageName));
+        startActivity(unInstallIntent);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
