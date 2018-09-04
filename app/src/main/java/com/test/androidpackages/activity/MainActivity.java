@@ -103,20 +103,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void installAppFromFile(File file){
+    private void installAppFromFile(File file) {
         Intent installIntent = new Intent(Intent.ACTION_VIEW);
         Uri uri;
-        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             uri = FileProvider.getUriForFile(this,
                     BuildConfig.APPLICATION_ID + ".provider", file);
             installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-       // }
-       /* else {
+        } else {
             uri = Uri.fromFile(file);
-        }*/
-        installIntent.setDataAndType(uri,"application/vnd.android.package-archive");
-        installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        installIntent.setDataAndType(uri, "application/vnd.android.package-archive");
+        //installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(installIntent);
     }
 
