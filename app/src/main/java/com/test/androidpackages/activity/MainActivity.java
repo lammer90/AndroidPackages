@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.test.androidpackages.AsyncTascUninstall;
 import com.test.androidpackages.BuildConfig;
 import com.test.androidpackages.model.AppInfo;
 import com.test.androidpackages.model.util.AppManager;
@@ -26,6 +27,7 @@ import com.test.androidpackages.handler.AppsAdapter;
 import com.test.androidpackages.R;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -34,6 +36,20 @@ public class MainActivity extends AppCompatActivity {
     private AppsAdapter appsAdapter = new AppsAdapter();
     private final int REQUEST_FILE = 1;
     private final String FILE_NAME = "file_name";
+    private AsyncTascUninstall.UninstallListener uninstallListener = new AsyncTascUninstall.UninstallListener() {
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        @Override
+        public void doUninstall() {
+            updateApps("");
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        @Override
+        public void doNotUninstall() {
+            updateApps("");
+        }
+    };
+
     private ItemTouchHelper.Callback callback = new ItemTouchHelper.Callback() {
         @Override
         public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
@@ -47,9 +63,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-            //new AsyncTascUninstall().execute(((AppInfo)viewHolder.itemView.getTag()).getPackageName());
+            WeakReference<AsyncTascUninstall.UninstallListener> uninstallListenerWeakReference = new WeakReference<>(uninstallListener);
+            new AsyncTascUninstall(uninstallListenerWeakReference).execute(((AppInfo)viewHolder.itemView.getTag()));
             // OR
-            uninstallPackage(((AppInfo)viewHolder.itemView.getTag()).getPackageName());
+            //uninstallPackage(((AppInfo)viewHolder.itemView.getTag()).getPackageName());
         }
     };
 

@@ -1,12 +1,14 @@
 package com.test.androidpackages.model.util;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import com.test.androidpackages.model.AppInfo;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +26,9 @@ public class AppManager {
                 packageInfo.packageName, // Имя пакета
                 packageInfo.versionCode, // Код версии
                 packageInfo.versionName, // Имя версии
-                packageInfo.applicationInfo.loadLabel(context.getPackageManager()).toString(),
-                packageInfo.applicationInfo.loadIcon(context.getPackageManager())); // Иконка приложения
+                packageInfo.applicationInfo.loadLabel(context.getPackageManager()).toString(), //Наименованеи приложения
+                packageInfo.applicationInfo.loadIcon(context.getPackageManager()), // Иконка приложения
+                ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1),
+                new File(packageInfo.applicationInfo.sourceDir));
     }
 }
